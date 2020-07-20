@@ -4,6 +4,7 @@
       <v-col class="d-flex" cols="4" sm="4">
         <v-select
                 :items="rib"
+                v-model="search"
                 label="RIB"
         ></v-select>
       </v-col>
@@ -56,7 +57,10 @@
     <v-data-table
             :headers="headers"
             :items="operations"
+            :sort-by="['Date']"
+            :sort-asce="[true]"
             :items-per-page="10"
+            :search="search"
             class="elevation-1"
     ></v-data-table>
   </v-container>
@@ -69,6 +73,7 @@
     data () {
       return {
         rib: [],
+        search:'',
         DateBegin: new Date().toISOString().substr(0, 10),
         date1: false,
         DateEnd: new Date().toISOString().substr(0, 10),
@@ -81,9 +86,9 @@
             value: 'RIB',
           },
           { text: 'Date', value: 'Date' },
-          { text: 'Libelle', value: 'Libelle' },
-          { text: 'Montant', value: 'Montant' },
-          { text: 'Devise', value: 'Devise' },
+          { text: 'Libelle', sortable: false, value: 'Libelle' },
+          { text: 'Montant', sortable: false, value: 'Montant' },
+          { text: 'Devise', sortable: false, value: 'Devise' },
         ],
         operations:[]
       }
