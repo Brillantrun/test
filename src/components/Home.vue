@@ -41,9 +41,7 @@
       ...mapActions("operation", ["getOperationUser"]),
       async getOperationUserAction() {
        const res = await this.getOperationUser();
-       console.log(res)
        this.operations = res
-        console.log(this.operations)
       }
     }
   }
