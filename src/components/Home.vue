@@ -2,7 +2,7 @@
   <v-container>
     <v-data-table
             :headers="headers"
-            :items="desserts"
+            :items="operations"
             :items-per-page="5"
             class="elevation-1"
     ></v-data-table>
@@ -10,6 +10,8 @@
 </template>
 
 <script>
+  import { mapActions } from "vuex";
+  import { mapGetters } from "vuex";
   export default {
     data () {
       return {
@@ -18,86 +20,31 @@
             text: 'RIB',
             align: 'start',
             sortable: false,
-            value: 'name',
+            value: 'RIB',
           },
-          { text: 'Date', value: 'calories' },
-          { text: 'Libelle', value: 'fat' },
-          { text: 'Montant', value: 'carbs' },
-          { text: 'Devise', value: 'protein' },
+          { text: 'Date', value: 'Date' },
+          { text: 'Libelle', value: 'Libelle' },
+          { text: 'Montant', value: 'Montant' },
+          { text: 'Devise', value: 'Devise' },
         ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-          },
-        ],
+        operations:[]
       }
     },
+    computed:{
+      ...mapGetters("operation",["isLoading","error","operation"]),
+    },
+    async created() {
+      await this.getOperationUserAction();
+
+    },
+    methods: {
+      ...mapActions("operation", ["getOperationUser"]),
+      async getOperationUserAction() {
+       const res = await this.getOperationUser();
+       console.log(res)
+       this.operations = res
+        console.log(this.operations)
+      }
+    }
   }
 </script>
