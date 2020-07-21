@@ -8,6 +8,7 @@
     </v-app-bar>
     <v-main>
       <home/>
+      <notifications group="foo" />
     </v-main>
   </v-app>
 </template>

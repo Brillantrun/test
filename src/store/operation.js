@@ -1,5 +1,6 @@
 import TransactionAPI from "../api/transactionUser";
 
+//Les stor permet d'appelé les API une seul foie et de pouvoir les réutiliser dans toute les pages ou composants
 export default {
     namespaced: true,
     state: {
@@ -31,6 +32,8 @@ export default {
         },
     },
     actions: {
+
+        //Définition des actions
         async getOperationUser({ commit }) {
             //Action permetant l'appel de l'API dans toute l'application
             try {
