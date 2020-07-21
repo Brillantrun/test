@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row align="center">
-      <v-col class="d-flex" cols="4" sm="4">
+      <v-col class="d-flex" cols="2" sm="2">
         <v-select
                 :items="rib"
                 v-model="search"
@@ -9,11 +9,9 @@
         ></v-select>
       </v-col>
 
-      <v-col cols="4" sm="4" md="4">
+      <v-col cols="4" sm="2" md="2">
         <v-menu
-                ref="show_start_date"
-                v-model="show_start_date"
-                :return-value.sync="start_date"
+                v-model="date1"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 transition="scale-transition"
@@ -21,7 +19,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-                    v-model="start_date"
+                    v-model="DateBegin"
                     label="Date début"
                     prepend-icon="event"
                     readonly
@@ -29,18 +27,13 @@
                     v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="start_date"
-                         @input="filterStartDate"
-          ></v-date-picker>
+          <v-date-picker v-model="DateBegin" @input=startDate(DateBegin)></v-date-picker>
         </v-menu>
       </v-col>
 
-
-      <v-col cols="4" sm="4" md="4">
+      <v-col cols="2" sm="4" md="2">
         <v-menu
-                ref="show_end_date"
-                v-model="show_end_date"
-                :return-value.sync="end_date"
+                v-model="date2"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 transition="scale-transition"
@@ -48,7 +41,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-                    v-model="end_date"
+                    v-model="DateEnd"
                     label="Date fin"
                     prepend-icon="event"
                     readonly
@@ -56,9 +49,11 @@
                     v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker  v-model="end_date"
-                          @input="filterEndDate"></v-date-picker>
+          <v-date-picker v-model="DateEnd" @input=endtDate(DateEnd)></v-date-picker>
         </v-menu>
+      </v-col>
+      <v-col cols="2" sm="4" md="2">
+        <v-btn depressed large color="primary" @click="resetFiltre()">Supression filtre</v-btn>
       </v-col>
     </v-row>
     <v-data-table
@@ -80,11 +75,6 @@
     data () {
       return {
         rib: [],
-        show_start_date: false,
-        start_date: null,
-
-        show_end_date: false,
-        end_date: null,
         search:'',
         DateBegin: new Date().toISOString().substr(0, 10),
         date1: false,
@@ -126,29 +116,6 @@
             }
           }
      },
-      /**
-       * Handler when select a date on "From" date picker.
-       */
-      filterStartDate(val) {
-        // Close the date picker.
-        this.$refs.show_start_date.save(val);
-
-        //Convert the value to a timestamp before saving it.
-        const timestamp = new Date(val + 'T00:00:00Z').getTime();
-        this.filters = this.$MultiFilters.updateFilters(this.filters, {start_date: timestamp});
-      },
-
-      /**
-       * Handler when select a date on "To" date picker.
-       */
-      filterEndDate(val) {
-        // Close the date picker.
-        this.$refs.show_end_date.save(val);
-
-        //Convert the value to a timestamp before saving it.
-        const timestamp = new Date(val + 'T00:00:00Z').getTime();
-        this.filters = this.$MultiFilters.updateFilters(this.filters, {end_date: timestamp});
-      },
      verifyElement(value){
          for (const rib in this.rib) {
             if (value === rib){
@@ -157,7 +124,31 @@
                 return false
             }
          }
-     }
+     },
+      startDate(start_date) {
+       if (start_date === null) {
+         return this.operations
+       }
+        this.operations = this.operations.filter(item => item.Date >= this.formatDate(start_date))
+        this.date1 = false
+    },
+      endtDate(end_date) {
+        if (end_date === null) {
+          return this.operations
+        }
+        this.operations = this.operations.filter(item => item.Date <= this.formatDate(end_date))
+        this.date2 = false
+      },
+      resetFiltre() {
+        this.search = '',
+        this.DateBegin = ''
+        this.DateEnd = ''
+        this.getOperationUserAction()
+      },
+    formatDate (value) {
+      if (!value) return '';
+      return new Date(value).toLocaleDateString("fr-FR");
     }
+  }
   }
 </script>
