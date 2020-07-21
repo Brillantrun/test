@@ -11,7 +11,9 @@
 
       <v-col cols="4" sm="4" md="4">
         <v-menu
-                v-model="date1"
+                ref="show_start_date"
+                v-model="show_start_date"
+                :return-value.sync="start_date"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 transition="scale-transition"
@@ -19,7 +21,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-                    v-model="DateBegin"
+                    v-model="start_date"
                     label="Date début"
                     prepend-icon="event"
                     readonly
@@ -27,14 +29,18 @@
                     v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="DateBegin" @input="date1 = false"></v-date-picker>
+          <v-date-picker v-model="start_date"
+                         @input="filterStartDate"
+          ></v-date-picker>
         </v-menu>
       </v-col>
 
 
       <v-col cols="4" sm="4" md="4">
         <v-menu
-                v-model="date2"
+                ref="show_end_date"
+                v-model="show_end_date"
+                :return-value.sync="end_date"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 transition="scale-transition"
@@ -42,7 +48,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-                    v-model="DateEnd"
+                    v-model="end_date"
                     label="Date fin"
                     prepend-icon="event"
                     readonly
@@ -50,7 +56,8 @@
                     v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="DateEnd" @input="date2 = false"></v-date-picker>
+          <v-date-picker  v-model="end_date"
+                          @input="filterEndDate"></v-date-picker>
         </v-menu>
       </v-col>
     </v-row>
@@ -73,6 +80,11 @@
     data () {
       return {
         rib: [],
+        show_start_date: false,
+        start_date: null,
+
+        show_end_date: false,
+        end_date: null,
         search:'',
         DateBegin: new Date().toISOString().substr(0, 10),
         date1: false,
@@ -114,6 +126,29 @@
             }
           }
      },
+      /**
+       * Handler when select a date on "From" date picker.
+       */
+      filterStartDate(val) {
+        // Close the date picker.
+        this.$refs.show_start_date.save(val);
+
+        //Convert the value to a timestamp before saving it.
+        const timestamp = new Date(val + 'T00:00:00Z').getTime();
+        this.filters = this.$MultiFilters.updateFilters(this.filters, {start_date: timestamp});
+      },
+
+      /**
+       * Handler when select a date on "To" date picker.
+       */
+      filterEndDate(val) {
+        // Close the date picker.
+        this.$refs.show_end_date.save(val);
+
+        //Convert the value to a timestamp before saving it.
+        const timestamp = new Date(val + 'T00:00:00Z').getTime();
+        this.filters = this.$MultiFilters.updateFilters(this.filters, {end_date: timestamp});
+      },
      verifyElement(value){
          for (const rib in this.rib) {
             if (value === rib){
