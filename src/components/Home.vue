@@ -129,7 +129,7 @@
         position: 'top center',
         title: '<h2>Message important</h2>',
         duration: 30000,
-        text: "A chaque fois que vous utilisez les filtres,Veillez à bien suprimer les filtres avant une autre tentative pour avoir une liste propre",
+        text: "Chaque fois que vous utilisez les filtres, Veuillez à bien supprimer les filtres avant une autre tentative pour avoir une liste propre",
       })
     },
     methods: {
